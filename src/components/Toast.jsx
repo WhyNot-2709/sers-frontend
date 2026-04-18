@@ -9,8 +9,7 @@ export default function Toast({ message, onClose }) {
       const t = setTimeout(() => { setVisible(false); setTimeout(onClose, 300); }, 2800);
       return () => clearTimeout(t);
     }
-  }, [message]);
-
+}, [message, onClose]);
   return (
     <div style={{
       position: 'fixed', bottom: '2rem', left: '50%',

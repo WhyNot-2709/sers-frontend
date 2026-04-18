@@ -1,5 +1,4 @@
-import React, { useMemo } from 'react';
-
+import React from 'react';
 const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const PERIODS = [
   { label: '8:30–9:25',   start: '08:30', end: '09:25' },
