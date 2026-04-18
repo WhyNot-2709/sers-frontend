@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-page:    #0f1117;
+  --bg-panel:   #16191f;
+  --bg-panel2:  #1c2029;
+  --sidebar-bg: #0b0e13;
+  --border:     rgba(255,255,255,0.07);
+  --border-med: rgba(255,255,255,0.11);
+  --text-1:  #f0f2f5;
+  --text-2:  #8a95a3;
+  --text-3:  #55606e;
+  --c-core:  #6c63ff;
+  --c-lab:   #f5a623;
+  --c-elec:  #2ed6a3;
+  --c-lunch: #ff6b6b;
+  --c-hum:   #f7c59f;
+  --c-fixed: #6c63ff;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+}
+
+html, body, #root {
+  height: 100%;
+  background: var(--bg-page);
+  color: var(--text-1);
+  font-family: 'Outfit', sans-serif;
+}
+
+button { cursor: pointer; font-family: 'Outfit', sans-serif; }
+a { text-decoration: none; color: inherit; }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
