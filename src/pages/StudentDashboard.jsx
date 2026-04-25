@@ -37,7 +37,7 @@ export default function StudentDashboard({ user, onLogout }) {
 
   useEffect(() => {
     fetchAll();
-    const interval = setInterval(fetchAll, 5000); // Poll every 5s
+    const interval = setInterval(fetchAll, 30000); // Poll every 5s
     return () => clearInterval(interval);
   }, [fetchAll]);
 
