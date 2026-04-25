@@ -2,10 +2,8 @@ import React from 'react';
 
 export default function Sidebar({ user, activeTab, setActiveTab, onLogout }) {
   const studentTabs = [
-    { id: 'dashboard', label: 'Dashboard', icon: '⊞' },
-    { id: 'timetable', label: 'My Timetable', icon: '📅' },
-    { id: 'electives', label: 'Electives', icon: '📚' },
-    { id: 'profile', label: 'Profile', icon: '👤' },
+  { id: 'timetable', label: 'My Timetable', icon: '📅' },
+  { id: 'electives', label: 'Electives', icon: '📚' },
   ];
 
   const adminTabs = [
