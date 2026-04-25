@@ -9,21 +9,24 @@ export default function Login({ onLogin }) {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    try {
-      const res = await login(username, password, role);
-      if (res.data.success) {
-        onLogin(res.data);
-      } else {
-        setError(res.data.message);
-      }
-    } catch (err) {
-      setError('Connection error. Is the backend running?');
+  e.preventDefault();
+  setLoading(true);
+  setError('');
+  try {
+    const processedUsername = role === 'STUDENT' 
+      ? username.trim().toUpperCase() 
+      : username.trim();
+    const res = await login(processedUsername, password, role);
+    if (res.data.success) {
+      onLogin(res.data);
+    } else {
+      setError(res.data.message);
     }
-    setLoading(false);
-  };
+  } catch (err) {
+    setError('Connection error. Is the backend running?');
+  }
+  setLoading(false);
+};
 
   return (
     <div style={{
