@@ -54,20 +54,31 @@ export default function StudentDashboard({ user, onLogout }) {
   const confirmedHum = confirmedCourses.filter(c => c.type === 'HUMANITIES').length;
 
   const doSelection = async (course, action) => {
-    try {
-      const res = await handleSelection(user.userId, course.id, action);
-      if (res.data.success) {
-        showToast(action === 'PREVIEW' ? `👁 Previewing ${course.name}` :
-                  action === 'CONFIRM' ? `✓ ${course.name} confirmed!` :
-                  `✕ ${course.name} removed`);
-        fetchAll();
-      } else {
-        showToast(`⚠ ${res.data.message}`);
-      }
-    } catch (e) {
-      showToast('Error connecting to server');
+  // Optimistically update UI immediately
+  if (action === 'PREVIEW') {
+    setTimetable(prev => [...prev, { ...course, status: 'PREVIEW' }]);
+    setElectives(prev => prev.filter(e => e.id !== course.id));
+  } else if (action === 'REMOVE') {
+    setTimetable(prev => prev.filter(c => c.id !== course.id));
+    setElectives(prev => [...prev, { ...course, status: null }]);
+  }
+
+  try {
+    const res = await handleSelection(user.userId, course.id, action);
+    if (res.data.success) {
+      showToast(action === 'PREVIEW' ? `👁 Previewing ${course.name}` :
+                action === 'CONFIRM' ? `✓ ${course.name} confirmed!` :
+                `✕ ${course.name} removed`);
+      await fetchAll(); // Sync with server after
+    } else {
+      showToast(`⚠ ${res.data.message}`);
+      await fetchAll(); // Revert if server rejected
     }
-  };
+  } catch (e) {
+    showToast('Error connecting to server');
+    await fetchAll(); // Revert on error
+  }
+};
 
   const filteredElectives = electives.filter(e => e.type === electiveTab);
   const allDisplayElectives = [
