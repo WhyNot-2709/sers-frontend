@@ -73,7 +73,7 @@ export default function Login({ onLogin }) {
               type="text"
               value={username}
               onChange={e => setUsername(e.target.value)}
-              placeholder={role === 'STUDENT' ? 'SE23UARI048' : 'admin@sers.com'}
+              placeholder={role === 'STUDENT' ? 'SE23UARI048' : role === 'ADMIN' ? 'admin@sers.com' : 'prof@sers.com'}
               style={{
                 width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)',
                 background: 'var(--bg-page)', border: '1px solid var(--border-med)',
