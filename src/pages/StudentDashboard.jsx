@@ -8,7 +8,7 @@ import Toast from '../components/Toast';
 import { getStudent, getTimetable, getAvailableElectives, handleSelection } from '../api/api';
 
 export default function StudentDashboard({ user, onLogout }) {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('timetable');
   const [studentData, setStudentData] = useState(null);
   const [timetable, setTimetable] = useState([]);
   const [electives, setElectives] = useState([]);
