@@ -6,6 +6,7 @@ import ElectiveCard from '../components/ElectiveCard';
 import CourseModal from '../components/CourseModal';
 import Toast from '../components/Toast';
 import { getStudent, getTimetable, getAvailableElectives, handleSelection } from '../api/api';
+import ConfirmModal from '../components/ConfirmModal';
 
 export default function StudentDashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('timetable');
@@ -16,6 +17,7 @@ export default function StudentDashboard({ user, onLogout }) {
   const [modalCourse, setModalCourse] = useState(null);
   const [toast, setToast] = useState('');
   const [loading, setLoading] = useState(true);
+  const [confirmingCourse, setConfirmingCourse] = useState(null);
 
   const showToast = (msg) => { setToast(msg); };
 
@@ -220,7 +222,7 @@ export default function StudentDashboard({ user, onLogout }) {
                   isConfirmed={confirmedIds.has(course.id)}
                   onInfo={setModalCourse}
                   onPreview={(c) => doSelection(c, 'PREVIEW')}
-                  onConfirm={(c) => doSelection(c, 'CONFIRM')}
+                  onConfirm={(c) => setConfirmingCourse(c)}
                   onRemove={(c) => doSelection(c, 'REMOVE')}
                 />
               ))}
@@ -236,6 +238,13 @@ export default function StudentDashboard({ user, onLogout }) {
 
       <CourseModal course={modalCourse} onClose={() => setModalCourse(null)} />
       {toast && <Toast message={toast} onClose={() => setToast('')} />}
+      <ConfirmModal
+        course={confirmingCourse}
+        studentData={studentData}
+        confirmedCourses={confirmedCourses}
+        onConfirm={() => { doSelection(confirmingCourse, 'CONFIRM'); setConfirmingCourse(null); }}
+        onCancel={() => setConfirmingCourse(null)}
+        />
     </div>
   );
 }
