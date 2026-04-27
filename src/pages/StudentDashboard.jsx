@@ -37,7 +37,7 @@ export default function StudentDashboard({ user, onLogout }) {
 
   useEffect(() => {
     fetchAll();
-    const interval = setInterval(fetchAll, 30000); // Poll every 5s
+    const interval = setInterval(fetchAll, 30000); // Poll every 30s
     return () => clearInterval(interval);
   }, [fetchAll]);
 
@@ -54,31 +54,31 @@ export default function StudentDashboard({ user, onLogout }) {
   const confirmedHum = confirmedCourses.filter(c => c.type === 'HUMANITIES').length;
 
   const doSelection = async (course, action) => {
-  // Optimistically update UI immediately
-  if (action === 'PREVIEW') {
-    setTimetable(prev => [...prev, { ...course, status: 'PREVIEW' }]);
-    setElectives(prev => prev.filter(e => e.id !== course.id));
-  } else if (action === 'REMOVE') {
-    setTimetable(prev => prev.filter(c => c.id !== course.id));
-    setElectives(prev => [...prev, { ...course, status: null }]);
-  }
-
-  try {
-    const res = await handleSelection(user.userId, course.id, action);
-    if (res.data.success) {
-      showToast(action === 'PREVIEW' ? `👁 Previewing ${course.name}` :
-                action === 'CONFIRM' ? `✓ ${course.name} confirmed!` :
-                `✕ ${course.name} removed`);
-      await fetchAll(); // Sync with server after
-    } else {
-      showToast(`⚠ ${res.data.message}`);
-      await fetchAll(); // Revert if server rejected
+    // Optimistically update UI immediately
+    if (action === 'PREVIEW') {
+      setTimetable(prev => [...prev, { ...course, status: 'PREVIEW' }]);
+      setElectives(prev => prev.filter(e => e.id !== course.id));
+    } else if (action === 'REMOVE') {
+      setTimetable(prev => prev.filter(c => c.id !== course.id));
+      setElectives(prev => [...prev, { ...course, status: null }]);
     }
-  } catch (e) {
-    showToast('Error connecting to server');
-    await fetchAll(); // Revert on error
-  }
-};
+
+    try {
+      const res = await handleSelection(user.userId, course.id, action);
+      if (res.data.success) {
+        showToast(action === 'PREVIEW' ? `👁 Previewing ${course.name}` :
+                  action === 'CONFIRM' ? `✓ ${course.name} confirmed!` :
+                  `✕ ${course.name} removed`);
+        await fetchAll(); // Sync with server after
+      } else {
+        showToast(`⚠ ${res.data.message}`);
+        await fetchAll(); // Revert if server rejected
+      }
+    } catch (e) {
+      showToast('Error connecting to server');
+      await fetchAll(); // Revert on error
+    }
+  };
 
   const filteredElectives = electives.filter(e => e.type === electiveTab);
   const allDisplayElectives = [
@@ -118,6 +118,7 @@ export default function StudentDashboard({ user, onLogout }) {
               <div style={{ fontFamily: 'JetBrains Mono', fontSize: '0.68rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--c-core)', marginBottom: 4 }}>Weekly Schedule</div>
               <h2 style={{ fontFamily: 'Syne', fontSize: '1.35rem', fontWeight: 700, letterSpacing: '-0.02em' }}>Class Timetable</h2>
             </div>
+            
             {/* Legend */}
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
               {[
@@ -133,6 +134,39 @@ export default function StudentDashboard({ user, onLogout }) {
                 </div>
               ))}
             </div>
+
+            {/* CONFIRMED SUMMARY */}
+            {confirmedCourses.length > 0 && (
+              <div style={{
+                background: 'var(--bg-panel2)', border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-md)', padding: '1rem 1.25rem',
+                marginBottom: '1rem'
+              }}>
+                <div style={{ fontSize: '0.68rem', fontFamily: 'JetBrains Mono', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--c-elec)', marginBottom: '0.75rem' }}>
+                  Confirmed Electives
+                </div>
+                <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+                  {confirmedCourses.map(c => (
+                    <div key={c.id} style={{
+                      display: 'flex', alignItems: 'center', gap: '0.5rem',
+                      background: 'var(--bg-panel)', border: '1px solid var(--border-med)',
+                      borderRadius: 8, padding: '0.4rem 0.75rem'
+                    }}>
+                      <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.7rem', color: c.type === 'HUMANITIES' ? 'var(--c-hum)' : 'var(--c-core)' }}>{c.code}</span>
+                      <span style={{ fontSize: '0.78rem', color: 'var(--text-1)' }}>{c.name}</span>
+                      <button
+                        onClick={() => doSelection(c, 'REMOVE')}
+                        style={{
+                          background: 'none', border: 'none', color: '#ff6b6b',
+                          cursor: 'pointer', fontSize: '0.75rem', padding: '0 2px'
+                        }}
+                      >✕</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <Timetable courses={allTimetableCourses} previews={previewCourses} />
           </section>
 
