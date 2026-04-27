@@ -40,6 +40,9 @@ export const getStudentsForCourse = (courseId) =>
 export const overrideAllocation = (studentId, courseId) =>
   axios.post(`${BASE}/admin/override?studentId=${studentId}&courseId=${courseId}`);
 
+export const removeStudentFromCourse = (studentId, courseId) =>
+  axios.delete(`${BASE}/admin/courses/${courseId}/students/${studentId}`);
+
 export const getProfessorCourses = (facultyId) =>
   axios.get(`${BASE}/professor/${facultyId}/courses`);
 

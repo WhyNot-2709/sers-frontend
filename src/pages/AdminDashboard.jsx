@@ -3,7 +3,7 @@ import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
 import CourseModal from '../components/CourseModal';
 import Toast from '../components/Toast';
-import { getAdminDashboard, getAllCourses, updateCourse, deleteCourse, createCourse, getStudentsForCourse, overrideAllocation, getAllStudents } from '../api/api';
+import { getAdminDashboard, getAllCourses, updateCourse, deleteCourse, createCourse, getStudentsForCourse, overrideAllocation, getAllStudents, removeStudentFromCourse } from '../api/api';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 export default function AdminDashboard({ user, onLogout }) {
@@ -70,6 +70,22 @@ export default function AdminDashboard({ user, onLogout }) {
       setNewCourse({ code:'', name:'', type:'CORE', credits:3, days:'', startTime:'', endTime:'', classroom:'', maxSeats:20, description:'' });
       loadAll();
     } catch(e) { showToast('Error creating course'); }
+  };
+
+  // NEW FUNCTION: Handle removing a student from a course
+  const handleRemoveStudent = async (studentId, studentName) => {
+    if (!window.confirm(`Are you sure you want to remove ${studentName} from this course?`)) return;
+    
+    try {
+      await removeStudentFromCourse(studentId, selectedCourse.id);
+      showToast(`✓ Removed ${studentName}`);
+      // Refresh the list of students for this course immediately
+      const res = await getStudentsForCourse(selectedCourse.id);
+      setCourseStudents(res.data);
+      loadAll(); // Also update overall stats
+    } catch (e) {
+      showToast('Error removing student');
+    }
   };
 
   const chartData = stats?.courseStats?.map(c => ({
@@ -327,7 +343,7 @@ export default function AdminDashboard({ user, onLogout }) {
                       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
                         <thead>
                           <tr style={{ borderBottom: '1px solid var(--border)' }}>
-                            {['Roll No', 'Name', 'Stream', 'Year', 'CGPA'].map(h => (
+                            {['Roll No', 'Name', 'Stream', 'Year', 'CGPA', 'Action'].map(h => (
                               <th key={h} style={{ padding: '0.75rem', textAlign: 'left', color: 'var(--text-3)', fontWeight: 500, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{h}</th>
                             ))}
                           </tr>
@@ -340,6 +356,17 @@ export default function AdminDashboard({ user, onLogout }) {
                               <td style={{ padding: '0.75rem', color: 'var(--text-2)' }}>{s.stream}</td>
                               <td style={{ padding: '0.75rem', color: 'var(--text-2)' }}>{s.year}</td>
                               <td style={{ padding: '0.75rem', fontFamily: 'JetBrains Mono', fontSize: '0.75rem', color: 'var(--c-elec)' }}>{s.cgpa}</td>
+                              
+                              {/* NEW ACTION COLUMN */}
+                              <td style={{ padding: '0.75rem' }}>
+                                <button 
+                                  onClick={() => handleRemoveStudent(s.id, s.name)} 
+                                  style={{ padding: '0.3rem 0.6rem', background: 'rgba(255,107,107,0.1)', border: '1px solid rgba(255,107,107,0.3)', borderRadius: 6, color: '#ff6b6b', fontSize: '0.7rem', cursor: 'pointer' }}
+                                >
+                                  Remove
+                                </button>
+                              </td>
+
                             </tr>
                           ))}
                         </tbody>
