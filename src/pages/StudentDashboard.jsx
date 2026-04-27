@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
 import Timetable from '../components/Timetable';
@@ -18,6 +18,10 @@ export default function StudentDashboard({ user, onLogout }) {
   const [toast, setToast] = useState('');
   const [loading, setLoading] = useState(true);
   const [confirmingCourse, setConfirmingCourse] = useState(null);
+
+  // 1. Create the refs here
+  const timetableRef = useRef(null);
+  const electivesRef = useRef(null);
 
   const showToast = (msg) => { setToast(msg); };
 
@@ -42,6 +46,15 @@ export default function StudentDashboard({ user, onLogout }) {
     const interval = setInterval(fetchAll, 30000); // Poll every 30s
     return () => clearInterval(interval);
   }, [fetchAll]);
+
+  // 2. Add the smooth scrolling effect
+  useEffect(() => {
+    if (activeTab === 'timetable' && timetableRef.current) {
+      timetableRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (activeTab === 'electives' && electivesRef.current) {
+      electivesRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [activeTab]);
 
   const fixedCourses = timetable.filter(c => c.status === 'FIXED');
   const confirmedCourses = timetable.filter(c => c.status === 'CONFIRMED');
@@ -112,7 +125,8 @@ export default function StudentDashboard({ user, onLogout }) {
         <div style={{ flex: 1, overflowY: 'auto', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
           {/* TIMETABLE PANEL */}
-          <section style={{
+          {/* 3. Attached the timetable ref here */}
+          <section ref={timetableRef} style={{
             background: 'var(--bg-panel)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius-lg)', padding: '1.75rem 2rem'
           }}>
@@ -173,7 +187,8 @@ export default function StudentDashboard({ user, onLogout }) {
           </section>
 
           {/* ELECTIVES PANEL */}
-          <section style={{
+          {/* 4. Attached the electives ref here */}
+          <section ref={electivesRef} style={{
             background: 'var(--bg-panel)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius-lg)', padding: '1.75rem 2rem'
           }}>
