@@ -22,6 +22,17 @@
   --radius-md: 14px;
   --radius-lg: 20px;
 }
+:root.light {
+  --bg-page:    #f0f2f5;
+  --bg-panel:   #ffffff;
+  --bg-panel2:  #e8eaed;
+  --sidebar-bg: #ffffff;
+  --border:     rgba(0,0,0,0.08);
+  --border-med: rgba(0,0,0,0.13);
+  --text-1:  #1a1d23;
+  --text-2:  #4a5568;
+  --text-3:  #8a95a3;
+}
 
 html, body, #root {
   height: 100%;

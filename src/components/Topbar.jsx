@@ -1,4 +1,5 @@
 import React from 'react';
+import ThemeToggle from './ThemeToggle'; // <-- Added import here
 
 export default function Topbar({ title, breadcrumb, stats }) {
   return (
@@ -13,6 +14,9 @@ export default function Topbar({ title, breadcrumb, stats }) {
         {breadcrumb && <span style={{ fontSize: '0.72rem', color: 'var(--text-3)', fontFamily: 'JetBrains Mono' }}>{breadcrumb}</span>}
       </div>
       <div style={{ display: 'flex', gap: '0.7rem', alignItems: 'center' }}>
+        
+        <ThemeToggle /> {/* <-- Added ThemeToggle here */}
+
         {stats && stats.map((s, i) => (
           <div key={i} style={{
             display: 'flex', alignItems: 'center', gap: '0.45rem',
