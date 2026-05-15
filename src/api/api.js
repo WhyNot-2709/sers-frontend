@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE = 'https://sers-backend-production.up.railway.app/api';
+const BASE = 'https://sers-backend-8qp3.onrender.com/api';
 export const login = (username, password, role) =>
   axios.post(`${BASE}/auth/login`, { username, password, role });
 
